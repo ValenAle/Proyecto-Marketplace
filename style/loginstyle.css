@@ -1,0 +1,183 @@
+*{
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:
+    linear-gradient(
+        135deg,
+        #eef7f6,
+        #f6f9fc
+    );
+
+    height:100vh;
+
+    overflow:hidden;
+}
+
+/* MAIN CONTAINER */
+
+.login-container{
+    width:100%;
+    max-width:1200px;
+
+    height:90vh;
+
+    background:white;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* LEFT */
+
+.left-side{
+    background:
+    linear-gradient(
+        180deg,
+        #3ed6bc,
+        #20b39d
+    );
+
+    color:white;
+
+    position:relative;
+}
+
+.logo{
+    font-size:52px;
+    font-weight:700;
+    letter-spacing:3px;
+}
+
+.left-title{
+    font-size:52px;
+    font-weight:700;
+    line-height:1.1;
+}
+
+.left-text{
+    font-size:18px;
+    opacity:0.92;
+}
+
+/* DECORATION */
+
+.circle{
+    position:absolute;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.1);
+}
+
+.circle1{
+    width:240px;
+    height:240px;
+
+    bottom:-80px;
+    right:-80px;
+}
+
+.circle2{
+    width:140px;
+    height:140px;
+
+    top:120px;
+    right:80px;
+}
+
+/* RIGHT */
+
+.right-side{
+    background:#fbfcfe;
+}
+
+.form-box{
+    max-width:360px;
+}
+
+.login-title{
+    font-size:38px;
+    font-weight:700;
+
+    color:#17212b;
+}
+
+.subtitle{
+    color:#6b7280;
+}
+
+/* INPUTS */
+
+.form-control{
+    border-radius:16px;
+
+    padding:14px 16px;
+
+    border:1px solid #dbe4ef;
+}
+
+.form-control:focus{
+    border-color:#3ed6bc;
+
+    box-shadow:0 0 0 4px rgba(62,214,188,0.12);
+}
+
+/* BUTTON */
+
+.btn-login{
+    background:
+    linear-gradient(
+        90deg,
+        #3ed6bc,
+        #20b39d
+    );
+
+    border:none;
+
+    color:white;
+
+    padding:14px;
+
+    border-radius:18px;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+    box-shadow:0 10px 20px rgba(32,179,157,0.25);
+}
+
+.btn-login:hover{
+    transform:translateY(-2px);
+
+    color:white;
+}
+
+/* LINKS */
+
+.custom-link{
+    color:#20b39d;
+
+    text-decoration:none;
+
+    font-weight:500;
+}
+
+.custom-link:hover{
+    color:#15907d;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .left-side{
+        display:none !important;
+    }
+
+}
