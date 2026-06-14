@@ -166,3 +166,39 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE sp_get_posts()
+BEGIN
+    SELECT
+        p.id_post,
+        p.title,
+        p.description,
+        p.image_url,
+        p.created_at,
+        pr.name       AS author,
+        c.name        AS category,
+        c.id_category
+    FROM posts p
+    INNER JOIN profiles    pr ON p.id_user      = pr.id_user
+    INNER JOIN categories  c  ON p.id_category  = c.id_category
+    WHERE p.is_active = 1
+    ORDER BY p.created_at DESC;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE sp_create_post(
+    IN p_title       VARCHAR(45),
+    IN p_description TEXT,
+    IN p_image_url   VARCHAR(500),
+    IN p_id_user     INT,
+    IN p_id_category INT
+)
+BEGIN
+    INSERT INTO posts(title, description, image_url, created_at, is_active, id_user, id_category)
+    VALUES(p_title, p_description, p_image_url, NOW(), 1, p_id_user, p_id_category);
+END //
+DELIMITER ;
