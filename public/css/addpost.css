@@ -1,0 +1,113 @@
+/* ADD POST MODAL */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 24px;
+    max-width: 520px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    padding: 32px;
+}
+
+.modal-subtitle {
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.modal-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #17212b;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid #dbe4ef;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 16px;
+}
+
+.modal-input:focus {
+    border-color: #3ed6bc;
+    box-shadow: 0 0 0 4px rgba(62, 214, 188, 0.12);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-cancel {
+    flex: 1;
+    border: 1px solid #dbe4ef;
+    background: white;
+    color: #6b7280;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: .3s;
+}
+
+.btn-cancel:hover {
+    background: #f5f5f5;
+}
+
+.btn-submit {
+    flex: 1;
+    border: none;
+    background: linear-gradient(90deg, #3ed6bc, #20b39d);
+    color: white;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: .3s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+}
+
+.btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.fivox-toast {
+    position: fixed;
+    top: 30px;
+    left: 47%;
+    background: #20b39d;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
