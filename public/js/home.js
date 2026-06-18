@@ -13,6 +13,8 @@ async function init() {
 
   configurarLogout();
   configurarCategorias();
+  configurarBtnCrear();
+  configurarTerminos();
   await cargarPosts();
 }
 
@@ -158,4 +160,126 @@ function configurarCategorias() {
       }
     });
   });
+}
+
+// CREAR POST MODAL 
+function configurarBtnCrear() {
+  const btn = document.getElementById('btn-open-create');
+  if (!btn) return;
+  btn.addEventListener('click', () => openCreateModal());
+}
+
+async function openCreateModal() {
+  document.getElementById('create-post-modal').style.display = 'flex';
+  await cargarCategorias();
+}
+
+function closeCreateModal() {
+  document.getElementById('create-post-modal').style.display = 'none';
+  document.getElementById('cp-title').value       = '';
+  document.getElementById('cp-description').value = '';
+  document.getElementById('cp-image').value       = '';
+  document.getElementById('cp-category').value    = '';
+  document.getElementById('create-post-alert').className = 'd-none';
+
+  // Cerrar toast si existe
+  const toast = document.querySelector('.fivox-toast');
+  if (toast) {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }
+}
+
+async function cargarCategorias() {
+  try {
+    const token = getToken();
+    const res   = await fetch('/api/posts/categories', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data  = await res.json();
+    const select = document.getElementById('cp-category');
+
+    select.innerHTML = '<option value="">Seleccioná una categoría</option>';
+    data.data.forEach(cat => {
+      select.innerHTML += `<option value="${cat.id_category}">${cat.name}</option>`;
+    });
+  } catch (err) {
+    console.error('Error al cargar categorías:', err);
+  }
+}
+
+async function submitPost() {
+  const title       = document.getElementById('cp-title').value.trim();
+  const description = document.getElementById('cp-description').value.trim();
+  const image_url   = document.getElementById('cp-image').value.trim();
+  const id_category = document.getElementById('cp-category').value;
+  const alertBox    = document.getElementById('create-post-alert');
+
+  if (!title || !description || !id_category) {
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'Título, descripción y categoría son obligatorios.';
+    return;
+  }
+
+  const btn = document.getElementById('btn-create-post');
+  btn.disabled     = true;
+  btn.textContent  = 'Publicando...';
+
+  try {
+    const token = getToken();
+    const res   = await fetch('/api/posts', {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        Authorization:   `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, description, image_url, id_category }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      alertBox.className   = 'alert alert-danger';
+      alertBox.textContent = data.message || 'Error al publicar.';
+      return;
+    }
+
+    setTimeout(() => {
+      closeCreateModal();
+      cargarPosts();
+      setTimeout(() => mostrarToast('¡Publicación creada con éxito! 🎉'), 300);
+    }, 2000);
+
+  } catch (err) {
+    console.error(err);
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'No se pudo conectar con el servidor.';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Publicar';
+  }
+}
+function mostrarToast(mensaje) {
+  const toast = document.createElement('div');
+  toast.className = 'fivox-toast';
+  toast.textContent = mensaje;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.style.opacity = '1', 10);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+function configurarTerminos() {
+  const btn = document.getElementById('btn-terms');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    document.getElementById('terms-modal').style.display = 'flex';
+  });
+}
+
+function closeTermsModal() {
+  document.getElementById('terms-modal').style.display = 'none';
 }
