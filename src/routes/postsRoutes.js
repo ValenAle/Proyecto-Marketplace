@@ -26,4 +26,25 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+
+// POST /api/posts
+router.post('/', authMiddleware, async (req, res) => {
+  const { title, description, image_url, id_category } = req.body;
+
+  if (!title || !description || !id_category) {
+    return res.status(400).json({ ok: false, message: 'Faltan campos obligatorios.' });
+  }
+
+  try {
+    await pool.execute(
+      'CALL sp_create_post(?, ?, ?, ?, ?)',
+      [title, description, image_url || null, req.user.id_user, id_category]
+    );
+    return res.status(201).json({ ok: true, message: 'Publicación creada.' });
+  } catch (error) {
+    console.error('Error en sp_create_post:', error);
+    return res.status(500).json({ ok: false, message: 'Error al crear la publicación.' });
+  }
+});
+
 module.exports = router;
