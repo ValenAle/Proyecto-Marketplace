@@ -15,6 +15,7 @@ async function init() {
   configurarCategorias();
   configurarBtnCrear();
   configurarTerminos();
+  configurarBtnPerfil();
   await cargarPosts();
 }
 
@@ -105,11 +106,18 @@ function openModal(post) {
   document.getElementById('modal-description').textContent = post.description;
   document.getElementById('modal-image').src               = post.image_url || '';
   document.getElementById('modal-image').style.display     = post.image_url ? 'block' : 'none';
-  document.getElementById('post-modal').style.display      = 'flex';
-}
+  document.getElementById('modal-phone').textContent       = post.author_phone ? `📞 ${post.author_phone}` : '';
+  document.getElementById('modal-email').textContent       = post.author_email ? `✉️ ${post.author_email}` : '';
 
-function closeModal() {
-  document.getElementById('post-modal').style.display = 'none';
+  const avatarImg = document.getElementById('modal-author-avatar');
+  if (post.author_avatar) {
+    avatarImg.src = post.author_avatar;
+    avatarImg.style.display = 'block';
+  } else {
+    avatarImg.style.display = 'none';
+  }
+
+  document.getElementById('post-modal').style.display = 'flex';
 }
   
 function configurarBusqueda() {
@@ -160,6 +168,10 @@ function configurarCategorias() {
       }
     });
   });
+}
+
+function closeModal() {
+  document.getElementById('post-modal').style.display = 'none';
 }
 
 // CREAR POST MODAL 
@@ -283,3 +295,149 @@ function configurarTerminos() {
 function closeTermsModal() {
   document.getElementById('terms-modal').style.display = 'none';
 }
+
+function configurarBtnPerfil() {
+  const btn = document.getElementById('btn-open-profile');
+  if (!btn) return;
+  btn.addEventListener('click', () => openProfileModal());
+}
+
+let pendingChanges = {};
+
+async function openProfileModal() {
+  document.getElementById('profile-modal').style.display = 'flex';
+  pendingChanges = {};
+
+  try {
+    const token = getToken();
+    const res   = await fetch('/api/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      setFieldView('name',   data.data.name);
+      setFieldView('email',  data.data.email);
+      setFieldView('phone',  data.data.phone);
+      setFieldView('avatar', data.data.avatar_url);
+
+      document.getElementById('pf-name').value   = data.data.name || '';
+      document.getElementById('pf-email').value  = data.data.email || '';
+      document.getElementById('pf-phone').value  = data.data.phone || '';
+      document.getElementById('pf-avatar').value = data.data.avatar_url || '';
+
+      const img = document.getElementById('profile-avatar-img');
+      if (data.data.avatar_url) {
+        img.src = data.data.avatar_url;
+        img.style.display = 'block';
+      } else {
+        img.style.display = 'none';
+      }
+    }
+  } catch (err) {
+    console.error('Error al cargar perfil:', err);
+  }
+}
+
+function setFieldView(field, value) {
+  const el = document.getElementById(`view-${field}`);
+  if (el) el.textContent = value || (field === 'avatar' ? 'Sin definir' : '—');
+}
+
+function toggleEdit(field) {
+  const wrapper = document.querySelector(`.profile-field[data-field="${field}"]`);
+  wrapper.classList.toggle('editing');
+
+  if (wrapper.classList.contains('editing')) {
+    document.getElementById(`pf-${field}`).focus();
+  }
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').style.display = 'none';
+  document.getElementById('profile-alert').className = 'd-none';
+  document.getElementById('pf-old-password').value = '';
+  document.getElementById('pf-new-password').value = '';
+
+  document.querySelectorAll('.profile-field.editing').forEach(f => f.classList.remove('editing'));
+}
+
+async function saveAll() {
+  const name       = document.getElementById('pf-name').value.trim();
+  const email      = document.getElementById('pf-email').value.trim();
+  const phone      = document.getElementById('pf-phone').value.trim();
+  const avatar_url = document.getElementById('pf-avatar').value.trim();
+  const oldPassword = document.getElementById('pf-old-password').value;
+  const newPassword = document.getElementById('pf-new-password').value;
+  const alertBox    = document.getElementById('profile-alert');
+
+  if (!name || !email) {
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'Nombre y email son obligatorios.';
+    return;
+  }
+
+  const btn = document.getElementById('btn-save-profile');
+  btn.disabled    = true;
+  btn.textContent = 'Guardando...';
+
+  try {
+    const token = getToken();
+
+    const res = await fetch('/api/auth/profile', {
+      method:  'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ name, email, phone, avatar_url }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      alertBox.className   = 'alert alert-danger';
+      alertBox.textContent = data.message || 'Error al actualizar.';
+      return;
+    }
+
+    // Si completó los campos de contraseña, cambiarla también
+    if (oldPassword && newPassword) {
+      const resPass = await fetch('/api/auth/password', {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+      const dataPass = await resPass.json();
+
+      if (!resPass.ok || !dataPass.ok) {
+        alertBox.className   = 'alert alert-danger';
+        alertBox.textContent = dataPass.message || 'Perfil guardado, pero falló el cambio de contraseña.';
+        return;
+      }
+    }
+
+    setFieldView('name', name);
+    setFieldView('email', email);
+    setFieldView('phone', phone);
+    setFieldView('avatar', avatar_url);
+
+    const img = document.getElementById('profile-avatar-img');
+    if (avatar_url) {
+      img.src = avatar_url;
+      img.style.display = 'block';
+    }
+
+    document.querySelectorAll('.profile-field.editing').forEach(f => f.classList.remove('editing'));
+    document.getElementById('pf-old-password').value = '';
+    document.getElementById('pf-new-password').value = '';
+
+    alertBox.className   = 'alert alert-success';
+    alertBox.textContent = 'Perfil actualizado correctamente.';
+
+  } catch (err) {
+    console.error(err);
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'No se pudo conectar con el servidor.';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Guardar cambios';
+  }
+}
+
