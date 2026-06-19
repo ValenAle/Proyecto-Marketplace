@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/addpost.css">
     <link rel="stylesheet" href="/css/terms.css">
+    <link rel="stylesheet" href="/css/profile.css">
 
 </head>
 
@@ -22,13 +23,20 @@
     <!-- POST MODAL -->
     <div id="post-modal" class="modal-overlay">
         <div class="modal-box-detail">
-          <img id="modal-image" src="" alt="" class="modal-img">
-          <div class="modal-body">
+        <img id="modal-image" src="" alt="" class="modal-img">
+        <div class="modal-body">
             <h2 id="modal-title" class="modal-title"></h2>
-            <p id="modal-author" class="modal-author"></p>
+            <div class="modal-author-row">
+                <img id="modal-author-avatar" src="" alt="" class="modal-author-avatar">
+                <p id="modal-author" class="modal-author"></p>
+              </div>
             <p id="modal-description" class="modal-description"></p>
+            <div class="modal-contact">
+            <p id="modal-phone"></p>
+            <p id="modal-email"></p>
+            </div>
             <button onclick="closeModal()" class="btn-close-detail">Cerrar</button>
-          </div>
+        </div>
         </div>
     </div>
 
@@ -116,6 +124,101 @@
     </div>
   </div>
 
+  <!-- PROFILE MODAL -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-box-profile">
+    
+        <div class="modal-profile-header">
+            <h2 class="modal-title">Mi perfil</h2>
+            <button class="modal-close-x" onclick="closeProfileModal()">
+            <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    
+        <div class="modal-profile-body">
+    
+            <div id="profile-alert" class="d-none" style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+    
+            <div class="profile-avatar-preview">
+            <img id="profile-avatar-img" src="" alt="Avatar" onerror="this.style.display='none'">
+            </div>
+    
+            <!-- AVATAR -->
+            <div class="profile-field" data-field="avatar">
+            <div class="profile-field-row">
+                <div class="profile-field-info">
+                <span class="profile-field-label">Foto de perfil</span>
+                <span class="profile-field-value" id="view-avatar">Sin definir</span>
+                </div>
+                <button class="profile-edit-btn" onclick="toggleEdit('avatar')">
+                <i class="bi bi-pencil-fill"></i>
+                </button>
+            </div>
+            <input id="pf-avatar" type="text" placeholder="https://..." class="modal-input profile-input-hidden">
+            </div>
+    
+            <!-- NOMBRE -->
+            <div class="profile-field" data-field="name">
+            <div class="profile-field-row">
+                <div class="profile-field-info">
+                <span class="profile-field-label">Nombre</span>
+                <span class="profile-field-value" id="view-name">—</span>
+                </div>
+                <button class="profile-edit-btn" onclick="toggleEdit('name')">
+                <i class="bi bi-pencil-fill"></i>
+                </button>
+            </div>
+            <input id="pf-name" type="text" placeholder="Tu nombre" class="modal-input profile-input-hidden">
+            </div>
+    
+            <!-- EMAIL -->
+            <div class="profile-field" data-field="email">
+            <div class="profile-field-row">
+                <div class="profile-field-info">
+                <span class="profile-field-label">Email</span>
+                <span class="profile-field-value" id="view-email">—</span>
+                </div>
+                <button class="profile-edit-btn" onclick="toggleEdit('email')">
+                <i class="bi bi-pencil-fill"></i>
+                </button>
+            </div>
+            <input id="pf-email" type="email" placeholder="tu@email.com" class="modal-input profile-input-hidden">
+            </div>
+    
+            <!-- TELEFONO -->
+            <div class="profile-field" data-field="phone">
+            <div class="profile-field-row">
+                <div class="profile-field-info">
+                <span class="profile-field-label">Teléfono</span>
+                <span class="profile-field-value" id="view-phone">—</span>
+                </div>
+                <button class="profile-edit-btn" onclick="toggleEdit('phone')">
+                <i class="bi bi-pencil-fill"></i>
+                </button>
+            </div>
+            <input id="pf-phone" type="tel" placeholder="Ej: 1123456789" class="modal-input profile-input-hidden">
+            </div>
+    
+            <hr class="profile-divider">
+    
+            <h3 class="profile-subsection-title">Cambiar contraseña</h3>
+    
+            <label class="modal-label">Contraseña actual</label>
+            <input id="pf-old-password" type="password" placeholder="••••••••" class="modal-input">
+    
+            <label class="modal-label">Nueva contraseña</label>
+            <input id="pf-new-password" type="password" placeholder="Mínimo 6 caracteres" class="modal-input">
+    
+        </div>
+    
+        <div class="modal-profile-footer">
+            <button class="btn-cancel" onclick="closeProfileModal()">Cancelar</button>
+            <button class="btn-submit" id="btn-save-profile" onclick="saveAll()">Guardar cambios</button>
+        </div>
+    
+        </div>
+    </div>
+
 
     <div class="app">
 
@@ -161,7 +264,7 @@
 
             <div class="floating-icons">
 
-                <button class="float-icon">
+                <button class="float-icon" id="btn-open-profile">
                     <i class="bi bi-person-fill"></i>
                 </button>
 
@@ -257,10 +360,6 @@
                         <h3>
                             Publicaciones
                         </h3>
-
-                        <!-- <button>
-                            Ver todas
-                        </button> -->
 
                     </div>
 
