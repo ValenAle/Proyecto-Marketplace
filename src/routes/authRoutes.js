@@ -12,4 +12,7 @@ router.post('/login', authController.login);
 // GET  /api/auth/me  (protegida)
 router.get('/me', authMiddleware, authController.me);
 
+router.put('/profile', authMiddleware, authController.updateProfile);
+router.put('/password', authMiddleware, authController.changePassword);
+
 module.exports = router;
