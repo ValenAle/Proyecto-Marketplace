@@ -15,116 +15,76 @@
     <link rel="stylesheet" href="/css/addpost.css">
     <link rel="stylesheet" href="/css/terms.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/support.css">
 
 </head>
 
 <body>
 
-    <!-- POST MODAL -->
-    <div id="post-modal" class="modal-overlay">
-        <div class="modal-box-detail">
-        <img id="modal-image" src="" alt="" class="modal-img">
-        <div class="modal-body">
-            <h2 id="modal-title" class="modal-title"></h2>
-            <div class="modal-author-row">
-                <img id="modal-author-avatar" src="" alt="" class="modal-author-avatar">
-                <p id="modal-author" class="modal-author"></p>
-              </div>
-            <p id="modal-description" class="modal-description"></p>
-            <div class="modal-contact">
-            <p id="modal-phone"></p>
-            <p id="modal-email"></p>
-            </div>
-            <button onclick="closeModal()" class="btn-close-detail">Cerrar</button>
-        </div>
-        </div>
-    </div>
-
-    <!-- CREATE POST MODAL -->
-    <div id="create-post-modal" class="modal-overlay">
-        <div class="modal-box">
-          <h2 class="modal-title">Nueva publicación</h2>
-          <p class="modal-subtitle">Completá los datos de tu servicio</p>
-          <div id="create-post-alert" class="d-none" style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
-          <label class="modal-label">Título</label>
-          <input id="cp-title" type="text" placeholder="Ej: Clases de guitarra" class="modal-input">
-          <label class="modal-label">Descripción</label>
-          <textarea id="cp-description" rows="3" placeholder="Describí tu servicio..." class="modal-input" style="resize:none;"></textarea>
-          <label class="modal-label">URL de imagen</label>
-          <input id="cp-image" type="text" placeholder="https://..." class="modal-input">
-          <label class="modal-label">Categoría</label>
-          <select id="cp-category" class="modal-input">
-            <option value="">Seleccioná una categoría</option>
-          </select>
-          <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeCreateModal()">Cancelar</button>
-            <button class="btn-submit" id="btn-create-post" onclick="submitPost()">Publicar</button>
-          </div>
-        </div>
-    </div>
-
+    <!-- LEFT SIDE MODALS -->
     <!-- TERMS MODAL -->
-<div id="terms-modal" class="modal-overlay">
-    <div class="modal-box-terms">
-      <div class="modal-terms-header">
-        <h2 class="modal-title">Términos y Condiciones</h2>
-        <p class="modal-subtitle">Última actualización: 2026</p>
-      </div>
-      <div class="modal-terms-body">
-  
-        <h3>1. Aceptación de los Términos</h3>
-        <p>Al registrarse, acceder o utilizar esta plataforma, el usuario acepta cumplir los presentes Términos y Condiciones. Si no está de acuerdo con alguna de las disposiciones aquí establecidas, deberá abstenerse de utilizar el servicio.</p>
-  
-        <h3>2. Descripción del Servicio</h3>
-        <p>La plataforma ofrece funcionalidades que permiten a los usuarios:</p>
-        <ul>
-          <li>Crear una cuenta y autenticarse mediante correo electrónico y contraseña.</li>
-          <li>Crear, visualizar y gestionar publicaciones con contenido e imágenes.</li>
-          <li>Comunicarse con administradores mediante un sistema de tickets de soporte.</li>
-          <li>Gestionar y actualizar su información de perfil.</li>
-        </ul>
-  
-        <h3>3. Registro y Autenticación</h3>
-        <p>Para utilizar determinadas funcionalidades, el usuario deberá registrarse proporcionando una dirección de correo electrónico válida y una contraseña. Cada cuenta es personal e intransferible. Las contraseñas son almacenadas mediante mecanismos de cifrado seguro (hash). La plataforma se reserva el derecho de suspender cuentas que incumplan estos términos.</p>
-  
-        <h3>4. Publicaciones de Contenido</h3>
-        <p>Los usuarios autenticados podrán crear publicaciones incluyendo título, descripción e imágenes. Cada usuario es el único responsable por el contenido que publique. Queda prohibido publicar contenido ilegal, fraudulento, ofensivo, discriminatorio o que infrinja derechos de propiedad intelectual.</p>
-  
-        <h3>5. Sistema de Soporte</h3>
-        <p>Los usuarios autenticados podrán generar solicitudes de soporte mediante el sistema de tickets integrado. Los administradores podrán cerrar tickets cuando consideren que la consulta ha sido resuelta.</p>
-  
-        <h3>6. Perfil de Usuario</h3>
-        <p>Los usuarios podrán consultar y modificar su nombre, fotografía de perfil y contraseña. Cada usuario es responsable de mantener actualizada la información de su cuenta.</p>
-  
-        <h3>7. Protección de Datos</h3>
-        <p>La plataforma implementa medidas razonables de seguridad para proteger la información almacenada. No obstante, no puede garantizarse una seguridad absoluta frente a accesos no autorizados o ataques informáticos.</p>
-  
-        <h3>8. Disponibilidad del Servicio</h3>
-        <p>La plataforma procurará mantener el servicio disponible de forma continua. Podrán producirse interrupciones por mantenimiento, actualizaciones o problemas técnicos.</p>
-  
-        <h3>9. Propiedad Intelectual</h3>
-        <p>El software, diseño, código fuente, logotipos y demás elementos de la plataforma son propiedad de sus respectivos titulares. El usuario no podrá copiar, modificar ni distribuir dichos elementos sin autorización expresa.</p>
-  
-        <h3>10. Limitación de Responsabilidad</h3>
-        <p>La plataforma no será responsable por pérdida de datos, interrupciones del servicio, contenido publicado por usuarios ni daños derivados del uso indebido de la plataforma.</p>
-  
-        <h3>11. Modificaciones</h3>
-        <p>La plataforma podrá modificar estos Términos en cualquier momento. El uso continuado implicará la aceptación de los cambios realizados.</p>
-  
-        <h3>12. Legislación Aplicable</h3>
-        <p>Estos Términos se regirán por la legislación vigente de la República Argentina. Cualquier controversia será sometida a la jurisdicción de los tribunales competentes.</p>
-  
-        <h3>13. Contacto</h3>
-        <p>Para consultas, los usuarios podrán comunicarse mediante el sistema de soporte disponible dentro de la plataforma.</p>
-  
-      </div>
-      <div class="modal-terms-footer">
-        <button onclick="closeTermsModal()" class="btn-close-detail">Cerrar</button>
-      </div>
+    <div id="terms-modal" class="modal-overlay">
+        <div class="modal-box-terms">
+        <div class="modal-terms-header">
+            <h2 class="modal-title">Términos y Condiciones</h2>
+            <p class="modal-subtitle">Última actualización: 2026</p>
+        </div>
+        <div class="modal-terms-body">
+    
+            <h3>1. Aceptación de los Términos</h3>
+            <p>Al registrarse, acceder o utilizar esta plataforma, el usuario acepta cumplir los presentes Términos y Condiciones. Si no está de acuerdo con alguna de las disposiciones aquí establecidas, deberá abstenerse de utilizar el servicio.</p>
+    
+            <h3>2. Descripción del Servicio</h3>
+            <p>La plataforma ofrece funcionalidades que permiten a los usuarios:</p>
+            <ul>
+            <li>Crear una cuenta y autenticarse mediante correo electrónico y contraseña.</li>
+            <li>Crear, visualizar y gestionar publicaciones con contenido e imágenes.</li>
+            <li>Comunicarse con administradores mediante un sistema de tickets de soporte.</li>
+            <li>Gestionar y actualizar su información de perfil.</li>
+            </ul>
+    
+            <h3>3. Registro y Autenticación</h3>
+            <p>Para utilizar determinadas funcionalidades, el usuario deberá registrarse proporcionando una dirección de correo electrónico válida y una contraseña. Cada cuenta es personal e intransferible. Las contraseñas son almacenadas mediante mecanismos de cifrado seguro (hash). La plataforma se reserva el derecho de suspender cuentas que incumplan estos términos.</p>
+    
+            <h3>4. Publicaciones de Contenido</h3>
+            <p>Los usuarios autenticados podrán crear publicaciones incluyendo título, descripción e imágenes. Cada usuario es el único responsable por el contenido que publique. Queda prohibido publicar contenido ilegal, fraudulento, ofensivo, discriminatorio o que infrinja derechos de propiedad intelectual.</p>
+    
+            <h3>5. Sistema de Soporte</h3>
+            <p>Los usuarios autenticados podrán generar solicitudes de soporte mediante el sistema de tickets integrado. Los administradores podrán cerrar tickets cuando consideren que la consulta ha sido resuelta.</p>
+    
+            <h3>6. Perfil de Usuario</h3>
+            <p>Los usuarios podrán consultar y modificar su nombre, fotografía de perfil y contraseña. Cada usuario es responsable de mantener actualizada la información de su cuenta.</p>
+    
+            <h3>7. Protección de Datos</h3>
+            <p>La plataforma implementa medidas razonables de seguridad para proteger la información almacenada. No obstante, no puede garantizarse una seguridad absoluta frente a accesos no autorizados o ataques informáticos.</p>
+    
+            <h3>8. Disponibilidad del Servicio</h3>
+            <p>La plataforma procurará mantener el servicio disponible de forma continua. Podrán producirse interrupciones por mantenimiento, actualizaciones o problemas técnicos.</p>
+    
+            <h3>9. Propiedad Intelectual</h3>
+            <p>El software, diseño, código fuente, logotipos y demás elementos de la plataforma son propiedad de sus respectivos titulares. El usuario no podrá copiar, modificar ni distribuir dichos elementos sin autorización expresa.</p>
+    
+            <h3>10. Limitación de Responsabilidad</h3>
+            <p>La plataforma no será responsable por pérdida de datos, interrupciones del servicio, contenido publicado por usuarios ni daños derivados del uso indebido de la plataforma.</p>
+    
+            <h3>11. Modificaciones</h3>
+            <p>La plataforma podrá modificar estos Términos en cualquier momento. El uso continuado implicará la aceptación de los cambios realizados.</p>
+    
+            <h3>12. Legislación Aplicable</h3>
+            <p>Estos Términos se regirán por la legislación vigente de la República Argentina. Cualquier controversia será sometida a la jurisdicción de los tribunales competentes.</p>
+    
+            <h3>13. Contacto</h3>
+            <p>Para consultas, los usuarios podrán comunicarse mediante el sistema de soporte disponible dentro de la plataforma.</p>
+    
+        </div>
+        <div class="modal-terms-footer">
+            <button onclick="closeTermsModal()" class="btn-close-detail">Cerrar</button>
+        </div>
+        </div>
     </div>
-  </div>
 
-  <!-- PROFILE MODAL -->
+    <!-- RIGHT SIDE MODALS -->
+    <!-- PROFILE MODAL -->
     <div id="profile-modal" class="modal-overlay">
         <div class="modal-box-profile">
     
@@ -219,21 +179,65 @@
         </div>
     </div>
 
+    <!-- POST MODAL -->
+    <div id="post-modal" class="modal-overlay">
+        <div class="modal-box-detail">
+        <img id="modal-image" src="" alt="" class="modal-img">
+        <div class="modal-body">
+            <h2 id="modal-title" class="modal-title"></h2>
+            <div class="modal-author-row">
+                <img id="modal-author-avatar" src="" alt="" class="modal-author-avatar">
+                <p id="modal-author" class="modal-author"></p>
+              </div>
+            <p id="modal-description" class="modal-description"></p>
+            <div class="modal-contact">
+            <p id="modal-phone"></p>
+            <p id="modal-email"></p>
+            </div>
+            <button onclick="closeModal()" class="btn-close-detail">Cerrar</button>
+        </div>
+        </div>
+    </div>
 
+    <!-- CREATE POST MODAL -->
+    <div id="create-post-modal" class="modal-overlay">
+        <div class="modal-box">
+          <h2 class="modal-title">Nueva publicación</h2>
+          <p class="modal-subtitle">Completá los datos de tu servicio</p>
+          <div id="create-post-alert" class="d-none" style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+          <label class="modal-label">Título</label>
+          <input id="cp-title" type="text" placeholder="Ej: Clases de guitarra" class="modal-input">
+          <label class="modal-label">Descripción</label>
+          <textarea id="cp-description" rows="3" placeholder="Describí tu servicio..." class="modal-input" style="resize:none;"></textarea>
+          <label class="modal-label">URL de imagen</label>
+          <input id="cp-image" type="text" placeholder="https://..." class="modal-input">
+          <label class="modal-label">Categoría</label>
+          <select id="cp-category" class="modal-input">
+            <option value="">Seleccioná una categoría</option>
+          </select>
+          <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeCreateModal()">Cancelar</button>
+            <button class="btn-submit" id="btn-create-post" onclick="submitPost()">Publicar</button>
+          </div>
+        </div>
+    </div>
+
+    <!-- INITIAL DISPLAY -->
     <div class="app">
 
         <!-- SIDEBAR -->
 
         <aside class="sidebar">
 
+            <!-- LOGO -->
             <div class="logo mb-5">
                 FIVOX
             </div>
-
+        
+            <!-- BUTTONS -->
             <div class="menu-bottom">
 
                 <div class="menu">
-
 
                     <button>
                         <i class="bi bi-briefcase-fill me-2"></i>
@@ -256,34 +260,38 @@
 
         </aside>
 
-        <!-- MAIN -->
-
+        <!-- MAIN (RIGHT SIDE) -->
         <main class="main">
 
             <!-- FLOATING BUTTONS -->
-
             <div class="floating-icons">
 
-                <button class="float-icon" id="btn-open-profile">
-                    <i class="bi bi-person-fill"></i>
-                </button>
+                <div class="floating-top">
+    
+                    <button id="btn-open-profile" class="float-icon">
+                        <i class="bi bi-person-fill"></i>
+                    </button>
+    
+                    <button class="float-icon" id="btn-open-create">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+        
+                </div>
+    
+                <div class="floating-bottom">
 
-                <button class="float-icon" id="btn-open-create">
-                    <i class="bi bi-plus-lg"></i>
-                </button>
-
-                <button class="float-icon">
-                    <i class="bi bi-chat-dots-fill"></i>
-                </button>
+                    <button id="btn-support" class="float-icon">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </button>
+    
+                </div>
 
             </div>
 
             <!-- CONTENT -->
-
-            <div class="main-content">
+            <div class="main-content" id="home-view">
 
                 <!-- HERO -->
-
                 <section class="hero">
 
                     <h1>
@@ -308,9 +316,7 @@
 
                 </section>
 
-                <!-- CATEGORIAS -->
-
-                
+                <!-- CATEGORIAS -->                
                 <div class="categories-scroll">
 
                     <div class="home-card" data-category="Técnicos">
@@ -352,7 +358,6 @@
                 </div>
 
                 <!-- PUBLICACIONES -->
-
                 <section>
 
                     <div class="section-title">
@@ -371,9 +376,143 @@
 
             </div>
 
-        </main>
+            <!-- SUPPORT VIEW DISPLAY -->
+            <div id="support-view" style="display:none;">
+        
+                <div class="support-modal">
+        
+                    <!-- PANEL IZQUIERDO -->
+                    <div class="support-sidebar">
+        
+                    <h2>Mis consultas</h2>
+        
+                    <button class="new-ticket-btn">
+                        <i class="bi bi-plus-lg"></i>
+                        Nueva consulta
+                    </button>
+        
+                    <div class="ticket-list">
+        
+                        <div class="ticket-card active">
 
+                            <div class="ticket-header">
+                                <h4>Consulta #123</h4>
+
+                                <button class="ticket-view-btn">
+                                    Ver
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <p>Problema con publicación</p>
+                            
+                            <div class="ticket-footer">
+                                <span class="ticket-status status-process">
+                                    <i class="bi bi-clock-fill"></i>
+                                    En proceso
+                                </span>
+                                <span>17/06/2026</span>
+                            </div>
+
+                        </div>
+        
+                        <div class="ticket-card active">
+
+                            <div class="ticket-header">
+                                <h4>Consulta #123</h4>
+
+                                <button class="ticket-view-btn">
+                                    Ver
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <p>Problema con publicación</p>
+                            
+                            <div class="ticket-footer">
+                                <span class="ticket-status status-waiting">
+                                    <i class="bi bi-clock-fill"></i>
+                                    En espera
+                                </span>
+                                <span>17/06/2026</span>
+                            </div>
+
+                        </div>
+        
+                        <div class="ticket-card active">
+
+                            <div class="ticket-header">
+                                <h4>Consulta #123</h4>
+
+                                <button class="ticket-view-btn">
+                                    Ver
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <p>Problema con publicación</p>
+                            
+                            <div class="ticket-footer">
+                                <span class="ticket-status status-resolved">
+                                    <i class="bi bi-clock-fill"></i>
+                                    Resuelto
+                                </span>
+                                <span>17/06/2026</span>
+                            </div>
+
+                        </div>
+        
+                    </div>
+        
+                    </div>
+        
+                    <!-- PANEL DERECHO -->
+        
+                    <div class="support-chat">
+        
+                    <div class="chat-header">
+        
+                        <div>
+                        <h3>Consulta #123</h3>
+                        </div>
+        
+                    </div>
+        
+                    <div class="chat-messages">
+        
+                        <div class="message user">
+                        Tengo un problema con una publicación.
+                        </div>
+        
+                        <div class="message admin">
+                        Hola, contanos qué ocurrió.
+                        </div>
+        
+                    </div>
+        
+                    <div class="chat-input">
+        
+                        <input
+                        type="text"
+                        placeholder="Escribí tu mensaje..."
+                        >
+        
+                        <button>
+                        Enviar
+                        </button>
+        
+                    </div>
+        
+                    </div>
+        
+                </div>
+        
+            </div>
+        </main>
+        
+        
     </div>
+
 
     <script src="/js/home.js"></script>
 
