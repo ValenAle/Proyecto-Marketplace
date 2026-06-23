@@ -1,0 +1,253 @@
+.support-modal{
+    width:95%;
+    max-width:1200px;
+    height:85vh;
+
+    background:white;
+    border-radius:24px;
+
+    display:flex;
+    overflow:hidden;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+/* IZQUIERDA */
+
+.support-sidebar{
+    width:340px;
+
+    background:#f8fafc;
+
+    border-right:1px solid #e5e7eb;
+
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.support-sidebar h2{
+    margin-bottom:20px;
+}
+
+.new-ticket-btn{
+    border:none;
+
+    background:#3ed6bc;
+    color:white;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-bottom:20px;
+}
+
+.ticket-list{
+    overflow-y:auto;
+
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+/* TICKETS */
+.ticket-card{
+    background:white;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:16px;
+
+    padding:15px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.ticket-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:8px;
+}
+
+.ticket-card:hover{
+    border-color:#3ed6bc;
+}
+
+.ticket-card.active{
+    border-color:#3ed6bc;
+
+    box-shadow: 0 0 0 3px rgba(62,214,188,.2);
+}
+
+.ticket-card h4{
+    margin-bottom:6px;
+}
+
+.ticket-card p{
+    margin-bottom:8px;
+    color:#000000;
+}
+
+.ticket-card span{
+    font-size:.85rem;
+    color:#000000;
+}
+
+.ticket-view-btn{
+    border:none;
+    background:none;
+
+    font-size:.9rem;
+    font-weight:500;
+
+    color:#6b7280;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+.ticket-view-btn:hover{
+    color:#3ed6bc;
+}
+
+.ticket-footer{
+    margin-top:12px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* ESTADO DE TICKET */
+.ticket-status{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    font-size:.8rem;
+    font-weight:600;
+
+    padding:4px 10px;
+    border-radius:999px;
+}
+
+.status-waiting{
+    background:#a7a5a3e3;
+    color:#000000;
+}
+
+.status-review{
+    background:#24589ce1;
+    color:#000000;
+}
+
+.status-process{
+    background:#ffa42d;
+    color:#000000;
+}
+
+.status-resolved{
+    background:#2ee46e;
+    color:#000000;
+}
+
+/* DERECHA */
+
+.support-chat{
+    flex:1;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-header{
+    padding:20px 25px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.chat-messages{
+    flex:1;
+
+    padding:25px;
+
+    overflow-y:auto;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+    background:#f9fafb;
+}
+
+.message{
+    max-width:70%;
+
+    padding:12px 18px;
+
+    border-radius:18px;
+}
+
+.message.user{
+    align-self:flex-end;
+
+    background:#3ed6bc;
+    color:white;
+}
+
+.message.admin{
+    align-self:flex-start;
+
+    background:white;
+
+    border:1px solid #e5e7eb;
+}
+
+.chat-input{
+    padding:20px;
+
+    border-top:1px solid #e5e7eb;
+
+    display:flex;
+    gap:10px;
+}
+
+.chat-input input{
+    flex:1;
+
+    border:1px solid #dbe4ef;
+
+    border-radius:14px;
+
+    padding:12px;
+}
+
+.chat-input button{
+    border:none;
+
+    background:#3ed6bc;
+    color:white;
+
+    padding:0 24px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+}
