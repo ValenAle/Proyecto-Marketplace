@@ -6,16 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
 async function init() {
   const token = getToken();
 
-  if (!token) {
-    window.location.href = '/';
-    return;
-  }
+   if (!token) {
+     window.location.href = '/';
+     return;
+   }
 
   configurarLogout();
   configurarCategorias();
   configurarBtnCrear();
   configurarTerminos();
   configurarBtnPerfil();
+  configurarBtnSoporte();
   await cargarPosts();
 }
 
@@ -98,6 +99,32 @@ function renderPosts(posts) {
     col.querySelector('.post').addEventListener('click', () => openModal(post));
     container.appendChild(col);
   });
+}
+
+// SUPPORT VIEW DISPLAY
+function configurarBtnSoporte() {
+    const btn = document.getElementById('btn-support');
+    if (!btn) return;
+
+    btn.addEventListener('click', toggleSupportView);
+}
+
+function toggleSupportView() {
+    const homeView = document.getElementById('home-view');
+    const supportView = document.getElementById('support-view');
+    const btn = document.getElementById('btn-support');
+
+    const abierto = window.getComputedStyle(supportView).display !== 'none';
+
+    if (abierto) {
+        supportView.style.display = 'none';
+        homeView.style.display = 'block';
+        btn.classList.remove('active');
+    } else {
+        homeView.style.display = 'none';
+        supportView.style.display = 'flex';
+        btn.classList.add('active');
+    }
 }
 
 function openModal(post) {
@@ -440,4 +467,3 @@ async function saveAll() {
     btn.textContent = 'Guardar cambios';
   }
 }
-
