@@ -4,6 +4,8 @@ const express    = require('express');
 const cors       = require('cors');
 const authRoutes  = require('./src/routes/authRoutes');
 const postsRoutes = require('./src/routes/postsRoutes');
+const supportRoutes = require('./src/routes/supportRoutes');
+
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -41,6 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 ───────────────────────────────────────── */
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRoutes);
+app.use('/api/support', supportRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'FIVOX API corriendo 🚀' });
