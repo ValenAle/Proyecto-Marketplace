@@ -16,6 +16,7 @@ async function init() {
   configurarBtnCrear();
   configurarTerminos();
   configurarBtnPerfil();
+  configurarBtnSoporte();
   await cargarPosts();
 }
 
@@ -98,6 +99,229 @@ function renderPosts(posts) {
     col.querySelector('.post').addEventListener('click', () => openModal(post));
     container.appendChild(col);
   });
+}
+
+// SUPPORT VIEW DISPLAY
+// SOPORTE
+let ticketActivoId = null;
+
+function configurarBtnSoporte() {
+  const btn = document.getElementById('btn-support');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    toggleSupportView();
+    await cargarTickets();
+  });
+}
+
+function toggleSupportView() {
+  const supportView = document.getElementById('support-view');
+  const btn = document.getElementById('btn-support');
+  const abierto = supportView.style.display === 'flex';
+
+  if (abierto) {
+    supportView.style.display = 'none';
+    btn.classList.remove('active');
+  } else {
+    supportView.style.display = 'flex';
+    btn.classList.add('active');
+  }
+}
+
+function closeSupportView() {
+  document.getElementById('support-view').style.display = 'none';
+  document.getElementById('btn-support').classList.remove('active');
+}
+
+async function cargarTickets() {
+  try {
+    const token = getToken();
+    const res   = await fetch('/api/support/tickets', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    renderTickets(data.data || []);
+  } catch (err) {
+    console.error('Error al cargar tickets:', err);
+  }
+}
+
+function renderTickets(tickets) {
+  const list = document.getElementById('ticket-list');
+  if (!list) return;
+
+  list.innerHTML = '';
+
+  if (tickets.length === 0) {
+    list.innerHTML = `<p style="color:#6b7280;font-size:14px;text-align:center;margin-top:20px;">No tenés consultas aún.</p>`;
+    return;
+  }
+
+  tickets.forEach(ticket => {
+    const statusMap = {
+      'OPEN':   { label: 'Abierto',    cls: 'status-process' },
+      'CLOSED': { label: 'Resuelto',   cls: 'status-resolved' },
+    };
+    const s = statusMap[ticket.status] || { label: ticket.status, cls: 'status-waiting' };
+    const fecha = new Date(ticket.created_at).toLocaleDateString('es-AR');
+
+    const card = document.createElement('div');
+    card.className = `ticket-card${ticketActivoId === ticket.id_ticket ? ' active' : ''}`;
+    card.innerHTML = `
+      <div class="ticket-header">
+        <h4>Consulta #${ticket.id_ticket}</h4>
+        <button class="ticket-view-btn" onclick="abrirTicket(${ticket.id_ticket}, '${ticket.subject || ''}')">
+          Ver <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+      <p>${ticket.subject || 'Sin asunto'}</p>
+      <div class="ticket-footer">
+        <span class="ticket-status ${s.cls}">
+          <i class="bi bi-clock-fill"></i> ${s.label}
+        </span>
+        <span>${fecha}</span>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+async function abrirTicket(id, subject) {
+  ticketActivoId = id;
+  document.getElementById('chat-ticket-title').textContent = `Consulta #${id} — ${subject}`;
+
+  const chatSection = document.getElementById('support-chat-section');
+  if (chatSection) chatSection.style.display = 'flex';
+
+  await cargarMensajes(id);
+  await cargarTickets();
+}
+
+async function cargarMensajes(id) {
+  try {
+    const token = getToken();
+    const res   = await fetch(`/api/support/tickets/${id}/messages`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    renderMensajes(data.data || []);
+  } catch (err) {
+    console.error('Error al cargar mensajes:', err);
+  }
+}
+
+function renderMensajes(messages) {
+  const container = document.getElementById('chat-messages');
+  if (!container) return;
+
+  const userRaw = localStorage.getItem('fivox_user') || sessionStorage.getItem('fivox_user') || '{}';
+  const user = JSON.parse(userRaw);
+  container.innerHTML = '';
+
+  if (messages.length === 0) {
+    container.innerHTML = `<p style="color:#6b7280;font-size:14px;text-align:center;">No hay mensajes aún.</p>`;
+    return;
+  }
+
+  messages.forEach(msg => {
+    const esPropio = Number(msg.id_user) === Number(user.id_user);
+    const div = document.createElement('div');
+    div.className = `message ${esPropio ? 'user' : 'admin'}`;
+    div.textContent = msg.message;
+    container.appendChild(div);
+  });
+
+  container.scrollTop = container.scrollHeight;
+}
+
+async function enviarMensaje() {
+  if (!ticketActivoId) return;
+
+  const input   = document.getElementById('chat-input-msg');
+  const message = input.value.trim();
+  if (!message) return;
+
+  try {
+    const token = getToken();
+    const res   = await fetch(`/api/support/tickets/${ticketActivoId}/messages`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ message }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      input.value = '';
+      await cargarMensajes(ticketActivoId);
+    }
+  } catch (err) {
+    console.error('Error al enviar mensaje:', err);
+  }
+}
+
+function crearNuevoTicket() {
+  document.getElementById('new-ticket-modal').style.display = 'flex';
+  document.getElementById('ticket-subject').value = '';
+  document.getElementById('ticket-first-message').value = '';
+  document.getElementById('new-ticket-alert').className = 'd-none';
+}
+
+function closeNewTicketModal() {
+  document.getElementById('new-ticket-modal').style.display = 'none';
+}
+
+async function confirmarNuevoTicket() {
+  const subject = document.getElementById('ticket-subject').value.trim();
+  const message = document.getElementById('ticket-first-message').value.trim();
+  const alertBox = document.getElementById('new-ticket-alert');
+
+  if (!subject) {
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'El asunto es obligatorio.';
+    return;
+  }
+
+  const btn = document.getElementById('btn-create-ticket');
+  btn.disabled    = true;
+  btn.textContent = 'Creando...';
+
+  try {
+    const token = getToken();
+
+    const res = await fetch('/api/support/tickets', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ subject }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      alertBox.className   = 'alert alert-danger';
+      alertBox.textContent = data.message || 'Error al crear la consulta.';
+      return;
+    }
+
+    const id_ticket = data.data.id_ticket;
+
+    // Si escribió un mensaje inicial, lo enviamos
+    if (message) {
+      await fetch(`/api/support/tickets/${id_ticket}/messages`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ message }),
+      });
+    }
+
+    closeNewTicketModal();
+    await abrirTicket(id_ticket, subject);
+
+  } catch (err) {
+    console.error(err);
+    alertBox.className   = 'alert alert-danger';
+    alertBox.textContent = 'No se pudo conectar con el servidor.';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Crear consulta';
+  }
 }
 
 function openModal(post) {
@@ -427,6 +651,8 @@ async function saveAll() {
     document.querySelectorAll('.profile-field.editing').forEach(f => f.classList.remove('editing'));
     document.getElementById('pf-old-password').value = '';
     document.getElementById('pf-new-password').value = '';
+
+    await cargarPosts(); // refresca los posts para que muestren los datos actualizados
 
     alertBox.className   = 'alert alert-success';
     alertBox.textContent = 'Perfil actualizado correctamente.';
