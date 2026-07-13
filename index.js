@@ -1,11 +1,13 @@
 require('dotenv').config();
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
 const path       = require('path');
 const express    = require('express');
 const cors       = require('cors');
 const authRoutes  = require('./src/routes/authRoutes');
 const postsRoutes = require('./src/routes/postsRoutes');
 const supportRoutes = require('./src/routes/supportRoutes');
-
+const termsRoutes = require('./src/routes/termsRoutes');
+const usersRoutes = require('./src/routes/usersRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +23,7 @@ const allowedOrigins = [
 /* ─────────────────────────────────────────
    Middlewares globales
 ───────────────────────────────────────── */
+
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -44,6 +47,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/terms', termsRoutes);
+app.use('/api/users', usersRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'FIVOX API corriendo 🚀' });
