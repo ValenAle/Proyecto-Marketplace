@@ -4,10 +4,10 @@ const pool     = require('../config/db');
 
 /* ─────────────────────────────────────────
    POST /api/auth/register
-   Body: { email, password, name }
+   Body: { email, password, name, phone }
 ───────────────────────────────────────── */
 const register = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, phone } = req.body;
 
   // Validaciones básicas
   if (!email || !password || !name) {
@@ -45,8 +45,8 @@ const register = async (req, res) => {
 
     // 3. Crear el usuario
     await pool.execute(
-      'CALL sp_create_user(?, ?)',
-      [email, passwordHash]
+      'CALL sp_create_user(?, ?, ?)',
+      [email, passwordHash, phone || null]
     );
 
     // 4. Obtener el id del usuario recién creado
@@ -135,12 +135,18 @@ const login = async (req, res) => {
       });
     }
 
-    // 4. Obtener perfil
+    // 4. Obtener perfil y rol
     const [profileRows] = await pool.execute(
       'CALL sp_get_profile(?)',
       [user.id_user]
     );
     const profile = profileRows[0][0] || null;
+
+    const [roleRows] = await pool.execute(
+      'SELECT r.name FROM roles r INNER JOIN users_roles ur ON r.id_role = ur.id_role WHERE ur.id_user = ?',
+      [user.id_user]
+    );
+    const role = roleRows[0]?.name || 'USER';
 
     // 5. Generar JWT
     const token = generateToken(user.id_user, user.email);
@@ -155,6 +161,7 @@ const login = async (req, res) => {
           email:      user.email,
           name:       profile?.name       || null,
           avatar_url: profile?.avatar_url || null,
+          role,
         },
       },
     });
@@ -179,17 +186,118 @@ const me = async (req, res) => {
     );
     const profile = profileRows[0][0] || null;
 
+    const [userRows] = await pool.execute(
+      'CALL sp_check_email_exists(?)',
+      [req.user.email]
+    );
+    const user = userRows[0][0] || null;
+
     return res.status(200).json({
       ok: true,
       data: {
         id_user:    req.user.id_user,
         email:      req.user.email,
+        phone:      user?.phone         || null,
         name:       profile?.name       || null,
         avatar_url: profile?.avatar_url || null,
       },
     });
   } catch (error) {
     console.error('Error en me:', error);
+    return res.status(500).json({
+      ok: false,
+      message: 'Error interno del servidor.',
+    });
+  }
+};
+
+/* ─────────────────────────────────────────
+   PUT /api/auth/profile   (requiere token)
+   Body: { name, avatar_url, phone }
+───────────────────────────────────────── */
+const updateProfile = async (req, res) => {
+  const { name, avatar_url, phone } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
+      ok: false,
+      message: 'El nombre es obligatorio.',
+    });
+  }
+
+  try {
+    await pool.execute(
+      'CALL sp_update_profile(?, ?, ?)',
+      [req.user.id_user, name, avatar_url || null]
+    );
+
+    await pool.execute(
+    'UPDATE users SET email = ?, phone = ? WHERE id_user = ?',
+    [req.body.email || req.user.email, phone || null, req.user.id_user]
+ );
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Perfil actualizado correctamente.',
+    });
+  } catch (error) {
+    console.error('Error en updateProfile:', error);
+    return res.status(500).json({
+      ok: false,
+      message: 'Error interno del servidor.',
+    });
+  }
+};
+
+/* ─────────────────────────────────────────
+   PUT /api/auth/password   (requiere token)
+   Body: { oldPassword, newPassword }
+───────────────────────────────────────── */
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({
+      ok: false,
+      message: 'Contraseña actual y nueva son requeridas.',
+    });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      ok: false,
+      message: 'La nueva contraseña debe tener al menos 6 caracteres.',
+    });
+  }
+
+  try {
+    const [rows] = await pool.execute(
+      'CALL sp_check_email_exists(?)',
+      [req.user.email]
+    );
+    const user = rows[0][0];
+
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!passwordMatch) {
+      return res.status(401).json({
+        ok: false,
+        message: 'La contraseña actual es incorrecta.',
+      });
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    await pool.execute(
+      'CALL sp_update_password(?, ?)',
+      [req.user.id_user, newPasswordHash]
+    );
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Contraseña actualizada correctamente.',
+    });
+  } catch (error) {
+    console.error('Error en changePassword:', error);
     return res.status(500).json({
       ok: false,
       message: 'Error interno del servidor.',
@@ -208,4 +316,4 @@ const generateToken = (id_user, email) => {
   );
 };
 
-module.exports = { register, login, me };
+module.exports = { register, login, me, updateProfile, changePassword };
