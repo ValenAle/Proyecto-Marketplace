@@ -47,4 +47,39 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
+
+// PUT /api/posts/:id — editar post (admin)
+router.put('/:id', authMiddleware, async (req, res) => {
+  const { title, description, image_url } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({ ok: false, message: 'Título y descripción son obligatorios.' });
+  }
+
+  try {
+    await pool.execute(
+      'UPDATE posts SET title = ?, description = ?, image_url = ? WHERE id_post = ?',
+      [title, description, image_url || null, req.params.id]
+    );
+    return res.status(200).json({ ok: true, message: 'Publicación actualizada.' });
+  } catch (error) {
+    console.error('Error al editar post:', error);
+    return res.status(500).json({ ok: false, message: 'Error al editar la publicación.' });
+  }
+});
+
+// DELETE /api/posts/:id — eliminar post (admin)
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    await pool.execute(
+      'UPDATE posts SET is_active = 0 WHERE id_post = ?',
+      [req.params.id]
+    );
+    return res.status(200).json({ ok: true, message: 'Publicación eliminada.' });
+  } catch (error) {
+    console.error('Error al eliminar post:', error);
+    return res.status(500).json({ ok: false, message: 'Error al eliminar la publicación.' });
+  }
+});
+
 module.exports = router;
