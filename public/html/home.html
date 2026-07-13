@@ -47,19 +47,21 @@
             <p class="modal-subtitle">Completá los datos de tu servicio</p>
             <div id="create-post-alert" class="d-none"
                 style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
-            <label class="modal-label">Título</label>
-            <input id="cp-title" type="text" placeholder="Ej: Clases de guitarra" class="modal-input">
-            <label class="modal-label">Descripción</label>
+            <label class="modal-label">Título <span id="cp-title-count"
+                    style="float:right;color:#9ba5b3;font-size:12px;">0/45</span></label>
+            <input id="cp-title" type="text" placeholder="Ej: Clases de guitarra" class="modal-input" maxlength="45">
+
+            <label class="modal-label">Descripción <span id="cp-desc-count"
+                    style="float:right;color:#9ba5b3;font-size:12px;">0/300</span></label>
             <textarea id="cp-description" rows="3" placeholder="Describí tu servicio..." class="modal-input"
-                style="resize:none;"></textarea>
+                style="resize:none;" maxlength="300"></textarea>
             <label class="modal-label">URL de imagen</label>
             <input id="cp-image" type="text" placeholder="https://..." class="modal-input">
             <label class="modal-label">Categoría</label>
             <select id="cp-category" class="modal-input">
                 <option value="">Seleccioná una categoría</option>
             </select>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeCreateModal()">Cancelar</button>
+            <div class="modal-actions"> <button class="btn-cancel" onclick="closeCreateModal()">Cancelar</button>
                 <button class="btn-submit" id="btn-create-post" onclick="submitPost()">Publicar</button>
             </div>
         </div>
@@ -72,75 +74,30 @@
                 <h2 class="modal-title">Términos y Condiciones</h2>
                 <p class="modal-subtitle">Última actualización: 2026</p>
             </div>
-            <div class="modal-terms-body">
 
-                <h3>1. Aceptación de los Términos</h3>
-                <p>Al registrarse, acceder o utilizar esta plataforma, el usuario acepta cumplir los presentes Términos
-                    y Condiciones. Si no está de acuerdo con alguna de las disposiciones aquí establecidas, deberá
-                    abstenerse de utilizar el servicio.</p>
+            <div id="terms-alert" class="d-none"
+                style="margin:0 32px;border-radius:12px;font-size:14px;padding:10px 14px;"></div>
 
-                <h3>2. Descripción del Servicio</h3>
-                <p>La plataforma ofrece funcionalidades que permiten a los usuarios:</p>
-                <ul>
-                    <li>Crear una cuenta y autenticarse mediante correo electrónico y contraseña.</li>
-                    <li>Crear, visualizar y gestionar publicaciones con contenido e imágenes.</li>
-                    <li>Comunicarse con administradores mediante un sistema de tickets de soporte.</li>
-                    <li>Gestionar y actualizar su información de perfil.</li>
-                </ul>
-
-                <h3>3. Registro y Autenticación</h3>
-                <p>Para utilizar determinadas funcionalidades, el usuario deberá registrarse proporcionando una
-                    dirección de correo electrónico válida y una contraseña. Cada cuenta es personal e intransferible.
-                    Las contraseñas son almacenadas mediante mecanismos de cifrado seguro (hash). La plataforma se
-                    reserva el derecho de suspender cuentas que incumplan estos términos.</p>
-
-                <h3>4. Publicaciones de Contenido</h3>
-                <p>Los usuarios autenticados podrán crear publicaciones incluyendo título, descripción e imágenes. Cada
-                    usuario es el único responsable por el contenido que publique. Queda prohibido publicar contenido
-                    ilegal, fraudulento, ofensivo, discriminatorio o que infrinja derechos de propiedad intelectual.</p>
-
-                <h3>5. Sistema de Soporte</h3>
-                <p>Los usuarios autenticados podrán generar solicitudes de soporte mediante el sistema de tickets
-                    integrado. Los administradores podrán cerrar tickets cuando consideren que la consulta ha sido
-                    resuelta.</p>
-
-                <h3>6. Perfil de Usuario</h3>
-                <p>Los usuarios podrán consultar y modificar su nombre, fotografía de perfil y contraseña. Cada usuario
-                    es responsable de mantener actualizada la información de su cuenta.</p>
-
-                <h3>7. Protección de Datos</h3>
-                <p>La plataforma implementa medidas razonables de seguridad para proteger la información almacenada. No
-                    obstante, no puede garantizarse una seguridad absoluta frente a accesos no autorizados o ataques
-                    informáticos.</p>
-
-                <h3>8. Disponibilidad del Servicio</h3>
-                <p>La plataforma procurará mantener el servicio disponible de forma continua. Podrán producirse
-                    interrupciones por mantenimiento, actualizaciones o problemas técnicos.</p>
-
-                <h3>9. Propiedad Intelectual</h3>
-                <p>El software, diseño, código fuente, logotipos y demás elementos de la plataforma son propiedad de sus
-                    respectivos titulares. El usuario no podrá copiar, modificar ni distribuir dichos elementos sin
-                    autorización expresa.</p>
-
-                <h3>10. Limitación de Responsabilidad</h3>
-                <p>La plataforma no será responsable por pérdida de datos, interrupciones del servicio, contenido
-                    publicado por usuarios ni daños derivados del uso indebido de la plataforma.</p>
-
-                <h3>11. Modificaciones</h3>
-                <p>La plataforma podrá modificar estos Términos en cualquier momento. El uso continuado implicará la
-                    aceptación de los cambios realizados.</p>
-
-                <h3>12. Legislación Aplicable</h3>
-                <p>Estos Términos se regirán por la legislación vigente de la República Argentina. Cualquier
-                    controversia será sometida a la jurisdicción de los tribunales competentes.</p>
-
-                <h3>13. Contacto</h3>
-                <p>Para consultas, los usuarios podrán comunicarse mediante el sistema de soporte disponible dentro de
-                    la plataforma.</p>
-
+            <!-- VISTA USUARIO -->
+            <div id="terms-view-section" class="modal-terms-body">
+                <p id="terms-content-text" style="white-space:pre-wrap;"></p>
             </div>
+
+            <!-- EDITOR ADMIN -->
+            <div id="terms-edit-section" style="display:none;padding:24px 32px;flex:1;">
+                <textarea id="terms-editor" style="
+                    width:100%;height:100%;min-height:340px;
+                    border:1px solid #dbe4ef;border-radius:14px;
+                    padding:16px;font-family:'Poppins',sans-serif;
+                    font-size:14px;line-height:1.7;resize:none;outline:none;
+                "></textarea>
+            </div>
+
             <div class="modal-terms-footer">
-                <button onclick="closeTermsModal()" class="btn-close-detail">Cerrar</button>
+                <button onclick="closeTermsModal()" class="btn-cancel" style="flex:1;">Cerrar</button>
+                <button id="btn-save-terms" onclick="guardarTerminos()" class="btn-submit" style="display:none;flex:1;">
+                    Guardar cambios
+                </button>
             </div>
         </div>
     </div>
@@ -244,6 +201,124 @@
         </div>
     </div>
 
+    <!-- EDIT POST MODAL (ADMIN) -->
+    <div id="edit-post-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">Editar publicación</h2>
+            <p class="modal-subtitle">Modificá los datos de la publicación</p>
+            <input type="hidden" id="ep-id">
+            <div id="edit-post-alert" class="d-none"
+                style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+            <label class="modal-label">Título <span id="ep-title-count"
+                    style="float:right;color:#9ba5b3;font-size:12px;">0/45</span></label>
+            <input id="ep-title" type="text" class="modal-input" maxlength="45">
+
+            <label class="modal-label">Descripción <span id="ep-desc-count"
+                    style="float:right;color:#9ba5b3;font-size:12px;">0/300</span></label>
+            <textarea id="ep-description" rows="3" class="modal-input" style="resize:none;" maxlength="300"></textarea>
+            <label class="modal-label">URL de imagen</label>
+            <input id="ep-image" type="text" placeholder="https://..." class="modal-input">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditPostModal()">Cancelar</button>
+                <button class="btn-submit" id="btn-save-edit-post" onclick="guardarEdicionPost()">Guardar
+                    cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW TICKET MODAL -->
+    <div id="new-ticket-modal" class="modal-overlay" style="z-index:300;">
+        <div class="modal-box">
+            <h2 class="modal-title">Nueva consulta</h2>
+            <p class="modal-subtitle">Describí brevemente tu consulta</p>
+            <div id="new-ticket-alert" class="d-none"
+                style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+            <label class="modal-label">Asunto</label>
+            <input id="ticket-subject" type="text" placeholder="Ej: Problema con mi publicación" class="modal-input">
+            <label class="modal-label">Mensaje inicial</label>
+            <textarea id="ticket-first-message" rows="3" placeholder="Contanos más detalles..." class="modal-input"
+                style="resize:none;"></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeNewTicketModal()">Cancelar</button>
+                <button class="btn-submit" id="btn-create-ticket" onclick="confirmarNuevoTicket()">Crear
+                    consulta</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ADMIN SUPPORT MODAL (Kanban 3 columnas) -->
+    <div id="admin-support-modal">
+        <div class="admin-support-box">
+
+            <div class="admin-support-header">
+                <h2>Consultas</h2>
+                <button class="admin-support-close" onclick="closeAdminSupportModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <input type="text" id="admin-ticket-search" placeholder="Buscar por ID, usuario o asunto..."
+                oninput="filtrarTicketsAdmin()">
+
+            <div id="admin-ticket-sections">
+                <div class="admin-ticket-col col-unread">
+                    <div class="admin-col-header">
+                        <span class="col-label"><i class="bi bi-envelope-fill"></i> Sin responder</span>
+                        <span class="col-count" id="count-unread">0</span>
+                    </div>
+                    <div class="ticket-list" id="ticket-list-unread"></div>
+                </div>
+
+                <div class="admin-ticket-col col-open">
+                    <div class="admin-col-header">
+                        <span class="col-label"><i class="bi bi-chat-dots-fill"></i> Abiertos</span>
+                        <span class="col-count" id="count-open">0</span>
+                    </div>
+                    <div class="ticket-list" id="ticket-list-open"></div>
+                </div>
+
+                <div class="admin-ticket-col col-closed">
+                    <div class="admin-col-header">
+                        <span class="col-label"><i class="bi bi-check-circle-fill"></i> Cerrados</span>
+                        <span class="col-count" id="count-closed">0</span>
+                    </div>
+                    <div class="ticket-list" id="ticket-list-closed"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ADMIN CHAT MODAL -->
+    <div id="admin-chat-modal">
+        <div class="admin-chat-box">
+
+            <div class="admin-chat-header">
+                <div>
+                    <h3 id="admin-chat-title">Consulta</h3>
+                    <span class="admin-chat-subtitle" id="admin-chat-subtitle"></span>
+                </div>
+                <div class="admin-chat-header-actions">
+                    <button class="btn-cerrar-ticket" id="btn-cerrar-ticket-admin" onclick="cerrarTicketAdmin()">
+                        Cerrar ticket
+                    </button>
+                    <button class="admin-chat-close" onclick="closeAdminChatModal()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-chat-messages" id="admin-chat-messages"></div>
+
+            <div class="admin-chat-input">
+                <input type="text" id="admin-chat-input-msg" placeholder="Escribí tu respuesta..."
+                    onkeydown="if(event.key==='Enter') enviarMensajeAdmin()">
+                <button onclick="enviarMensajeAdmin()">Enviar</button>
+            </div>
+
+        </div>
+    </div>
 
     <div class="app" id="home-view">
 
@@ -257,9 +332,24 @@
             <div class="menu-bottom">
                 <div class="menu">
 
-                    <button>
+                    <button id="btn-usuarios" style="display:none;">
+                        <i class="bi bi-people-fill me-2"></i>
+                        Usuarios
+                    </button>
+
+                    <button id="btn-support-admin" style="display:none;">
+                        <i class="bi bi-chat-dots-fill me-2"></i>
+                        Soporte
+                    </button>
+
+                    <button id="btn-mis-servicios">
                         <i class="bi bi-briefcase-fill me-2"></i>
                         Mis Servicios
+                    </button>
+
+                    <button id="btn-admin-servicios" style="display:none;">
+                        <i class="bi bi-grid-fill me-2"></i>
+                        Administrar Servicios
                     </button>
 
                     <button id="btn-terms">
@@ -370,35 +460,53 @@
 
             </div>
 
-            <!-- SUPPORT VIEW DISPLAY -->
-            <div id="support-view"
-                style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
 
+            <!-- SUPPORT VIEW (MODAL FLOTANTE) -->
+            <div id="support-view">
                 <div class="support-modal">
 
-                    <!-- PANEL IZQUIERDO -->
+                    <!-- IZQUIERDA -->
                     <div class="support-sidebar">
-
                         <h2>Mis consultas</h2>
 
                         <button class="new-ticket-btn" onclick="crearNuevoTicket()">
-                            <i class="bi bi-plus-lg"></i>
-                            Nueva consulta
+                            <i class="bi bi-plus-lg me-2"></i>Nueva consulta
                         </button>
 
-                        <div class="ticket-list" id="ticket-list">
-                        </div>
+                        <input type="text" id="ticket-search" class="modal-input" placeholder="Buscar consulta..."
+                            style="display:none;margin-bottom:16px;" oninput="filtrarTickets()">
 
+                        <!-- LISTA USUARIO -->
+                        <div class="ticket-list" id="ticket-list"></div>
+
+                        <!-- SECCIONES ADMIN (3 columnas) -->
+                        <div id="admin-ticket-sections">
+                            <div class="admin-ticket-col">
+                                <h4>Sin leer</h4>
+                                <div class="ticket-list" id="ticket-list-unread"></div>
+                            </div>
+                            <div class="admin-ticket-col">
+                                <h4>Abiertos</h4>
+                                <div class="ticket-list" id="ticket-list-open"></div>
+                            </div>
+                            <div class="admin-ticket-col">
+                                <h4>Cerrados</h4>
+                                <div class="ticket-list" id="ticket-list-closed"></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- PANEL DERECHO -->
+                    <!-- DERECHA -->
                     <div class="support-chat" id="support-chat-section">
-
                         <div class="chat-header">
                             <h3 id="chat-ticket-title">Seleccioná una consulta</h3>
-                            <button class="modal-close-x" onclick="closeSupportView()">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <button class="btn-cancel" id="btn-close-ticket" style="display:none;"
+                                    onclick="cerrarTicket()">Cerrar ticket</button>
+                                <button class="modal-close-x" onclick="closeSupportView()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="chat-messages" id="chat-messages">
@@ -407,31 +515,81 @@
                             </p>
                         </div>
 
-                        <div class="chat-input">
+                        <div class="chat-input" style="display:none;">
                             <input type="text" id="chat-input-msg" placeholder="Escribí tu mensaje..."
                                 onkeydown="if(event.key==='Enter') enviarMensaje()">
                             <button onclick="enviarMensaje()">Enviar</button>
                         </div>
-
                     </div>
 
                 </div>
-
             </div>
 
-            <!-- NEW TICKET MODAL -->
-            <div id="new-ticket-modal" class="modal-overlay" style="z-index:300;">
+            <!-- USERS MODAL (ADMIN) -->
+            <div id="users-modal" class="modal-overlay" style="z-index:300;">
+                <div style="
+                            background:white;border-radius:24px;
+                            width:100%;max-width:680px;
+                            max-height:85vh;display:flex;flex-direction:column;
+                            overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+                          ">
+                    <div style="padding:24px 28px 16px;border-bottom:1px solid #e8edf5;">
+                        <h2 class="modal-title">Usuarios activos</h2>
+                        <p class="modal-subtitle">Usuarios con al menos una publicación activa</p>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #dbe4ef;border-radius:12px;padding:8px 14px;margin-top:12px;">
+                            <i class="bi bi-search" style="color:#9ba5b3;"></i>
+                            <input id="user-search" type="text" placeholder="Buscar por nombre..."
+                                oninput="filtrarUsuarios()"
+                                style="border:none;outline:none;background:transparent;font-family:'Poppins',sans-serif;font-size:14px;flex:1;">
+                        </div>
+                    </div>
+                    <div id="users-list"
+                        style="overflow-y:auto;flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:12px;">
+                    </div>
+                    <div style="padding:16px 28px;border-top:1px solid #e8edf5;">
+                        <button onclick="closeUsersModal()" class="btn-cancel" style="width:100%;">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USER POSTS MODAL (ADMIN) -->
+            <div id="user-posts-modal" class="modal-overlay" style="z-index:400;">
+                <div style="
+                            background:white;border-radius:24px;
+                            width:100%;max-width:680px;
+                            max-height:85vh;display:flex;flex-direction:column;
+                            overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+                          ">
+                    <div
+                        style="padding:24px 28px 16px;border-bottom:1px solid #e8edf5;display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <h2 class="modal-title" id="user-posts-title">Publicaciones</h2>
+                            <p class="modal-subtitle" id="user-posts-subtitle"></p>
+                        </div>
+                        <button class="modal-close-x" onclick="closeUserPostsModal()">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div id="user-posts-list"
+                        style="overflow-y:auto;flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:12px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT USER MODAL (ADMIN) -->
+            <div id="edit-user-modal" class="modal-overlay" style="z-index:400;">
                 <div class="modal-box">
-                    <h2 class="modal-title">Nueva consulta</h2>
-                    <p class="modal-subtitle">Describí brevemente tu consulta</p>
-                    <div id="new-ticket-alert" class="d-none" style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
-                    <label class="modal-label">Asunto</label>
-                    <input id="ticket-subject" type="text" placeholder="Ej: Problema con mi publicación" class="modal-input">
-                    <label class="modal-label">Mensaje inicial</label>
-                    <textarea id="ticket-first-message" rows="3" placeholder="Contanos más detalles..." class="modal-input" style="resize:none;"></textarea>
+                    <h2 class="modal-title">Editar usuario</h2>
+                    <p class="modal-subtitle">Modificá el nombre del usuario</p>
+                    <input type="hidden" id="eu-id">
+                    <div id="edit-user-alert" class="d-none"
+                        style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+                    <label class="modal-label">Nombre</label>
+                    <input id="eu-name" type="text" placeholder="Nombre del usuario" class="modal-input">
                     <div class="modal-actions">
-                        <button class="btn-cancel" onclick="closeNewTicketModal()">Cancelar</button>
-                        <button class="btn-submit" id="btn-create-ticket" onclick="confirmarNuevoTicket()">Crear consulta</button>
+                        <button class="btn-cancel" onclick="closeEditUserModal()">Cancelar</button>
+                        <button class="btn-submit" onclick="guardarEdicionUsuario()">Guardar</button>
                     </div>
                 </div>
             </div>
