@@ -526,3 +526,42 @@ body {
 .modal-author-row .modal-author {
     margin-bottom: 0;
 }
+
+.post-admin-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-edit-post,
+.btn-delete-post {
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+}
+
+.btn-edit-post {
+    background: #e8f0ff;
+    color: #3b82f6;
+}
+
+.btn-edit-post:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-delete-post {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.btn-delete-post:hover {
+    background: #ef4444;
+    color: white;
+}
