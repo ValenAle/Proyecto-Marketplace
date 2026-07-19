@@ -16,25 +16,81 @@
     <link rel="stylesheet" href="/css/terms.css">
     <link rel="stylesheet" href="/css/profile.css">
     <link rel="stylesheet" href="/css/support.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
 </head>
 
-<body>
+<!-- CHATBOT (solo usuario) -->
+<div id="chatbot-container" style="display:none;">
 
+    <button id="chatbot-toggle" aria-label="Abrir asistente">
+        <i class="bi bi-robot"></i>
+    </button>
+
+    <div id="chatbot-window">
+        <div class="chatbot-header">
+            <div class="chatbot-header-avatar">
+                <i class="bi bi-robot"></i>
+            </div>
+            <div class="chatbot-header-info">
+                <h4>FIVOX Asistente</h4>
+                <p>¿En qué puedo ayudarte?</p>
+            </div>
+            <button id="chatbot-close" aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div id="chatbot-messages">
+            <div class="chatbot-msg chatbot-msg-bot">¡Hola! Soy tu asistente FIVOX. ¿Cómo puedo ayudarte hoy con la
+                búsqueda de servicios?</div>
+        </div>
+
+        <div id="chatbot-quick-replies"></div>
+
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Escribí tu mensaje...">
+            <button id="chatbot-send" aria-label="Enviar">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/chatbot.js"></script>
+
+<body>
     <!-- POST MODAL -->
     <div id="post-modal" class="modal-overlay">
         <div class="modal-box-detail">
             <img id="modal-image" src="" alt="" class="modal-img">
             <div class="modal-body">
+                <div id="modal-rating" style="display:none;margin-bottom:14px;font-size:20px;"></div>
                 <h2 id="modal-title" class="modal-title"></h2>
                 <div class="modal-author-row">
                     <img id="modal-author-avatar" src="" alt="" class="modal-author-avatar">
                     <p id="modal-author" class="modal-author"></p>
                 </div>
                 <p id="modal-description" class="modal-description"></p>
-                <div class="modal-contact">
+                <div class="modal-contact" id="modal-contact-info" style="display:none;">
                     <p id="modal-phone"></p>
                     <p id="modal-email"></p>
                 </div>
+
+                <div id="modal-actions-row" style="display:flex;gap:10px;margin-bottom:20px;">
+                    <button id="btn-contratar" onclick="contratarServicio()" style="
+                        flex:1;border:none;background:#f0fdf9;color:#20b39d;
+                        padding:10px;border-radius:12px;font-weight:600;
+                        font-size:14px;cursor:pointer;border:1px solid #3ed6bc;
+                        font-family:'Poppins',sans-serif;transition:.2s;">
+                        <i class="bi bi-telephone-fill me-2"></i>Contratar servicio
+                    </button>
+                </div>
+                <a id="btn-share-whatsapp" href="#" target="_blank" rel="noopener" class="btn-share-whatsapp"
+                    style="display:none;">
+                    <i class="bi bi-whatsapp me-2"></i>Compartir por WhatsApp
+                </a>
                 <button onclick="closeModal()" class="btn-close-detail">Cerrar</button>
             </div>
         </div>
@@ -67,6 +123,54 @@
         </div>
     </div>
 
+    <!-- CALIFICAR SERVICIOS MODAL (USUARIO) -->
+    <div id="calificar-modal" class="modal-overlay" style="z-index:300;">
+        <div style="
+    background:white;border-radius:24px;width:100%;max-width:680px;
+    max-height:85vh;display:flex;flex-direction:column;
+    overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  ">
+            <div
+                style="padding:24px 28px 16px;border-bottom:1px solid #e8edf5;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h2 class="modal-title">Calificar servicios</h2>
+                    <p class="modal-subtitle">Servicios que contactaste</p>
+                </div>
+                <button class="modal-close-x" onclick="closeCalificarModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div id="calificar-list"
+                style="overflow-y:auto;flex:1;padding:16px 28px;display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="modal-overlay" style="z-index:400;">
+        <div class="modal-box">
+            <h2 class="modal-title">Calificar servicio</h2>
+            <p class="modal-subtitle" id="review-post-name"></p>
+            <input type="hidden" id="review-id-contact">
+            <input type="hidden" id="review-id-post">
+            <div id="review-alert" class="d-none"
+                style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+            <div style="text-align:center;margin:20px 0;">
+                <p style="font-size:14px;color:#6b7280;margin-bottom:12px;">¿Cuántas estrellas le das?</p>
+                <div id="star-selector" style="display:flex;justify-content:center;gap:8px;">
+                    <button class="star-btn" data-value="1" onclick="selectStar(1)"><i class="bi bi-star"></i></button>
+                    <button class="star-btn" data-value="2" onclick="selectStar(2)"><i class="bi bi-star"></i></button>
+                    <button class="star-btn" data-value="3" onclick="selectStar(3)"><i class="bi bi-star"></i></button>
+                    <button class="star-btn" data-value="4" onclick="selectStar(4)"><i class="bi bi-star"></i></button>
+                    <button class="star-btn" data-value="5" onclick="selectStar(5)"><i class="bi bi-star"></i></button>
+                </div>
+                <p id="star-label" style="font-size:13px;color:#9ba5b3;margin-top:8px;"></p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeReviewModal()">Cancelar</button>
+                <button class="btn-submit" id="btn-submit-review" onclick="enviarResena()">Publicar reseña</button>
+            </div>
+        </div>
+    </div>
     <!-- TERMS MODAL -->
     <div id="terms-modal" class="modal-overlay">
         <div class="modal-box-terms">
@@ -320,6 +424,134 @@
         </div>
     </div>
 
+    <!-- MIS SERVICIOS MODAL (USUARIO) -->
+    <div id="mis-servicios-modal" class="modal-overlay" style="z-index:300;">
+        <div style="
+    background:white;border-radius:24px;width:100%;max-width:780px;
+    max-height:88vh;display:flex;flex-direction:column;
+    overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  ">
+            <div
+                style="padding:24px 28px 16px;border-bottom:1px solid #e8edf5;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h2 class="modal-title">Mis servicios</h2>
+                    <p class="modal-subtitle">Gestioná tus publicaciones</p>
+                </div>
+                <button class="modal-close-x" onclick="closeMisServiciosModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div style="overflow-y:auto;flex:1;padding:20px 28px;display:flex;flex-direction:column;gap:24px;">
+
+                <!-- EN REVISION -->
+                <div>
+                    <h3 class="services-section-title warning">
+                        <i class="bi bi-hourglass-split"></i> En revisión
+                    </h3>
+                    <div id="my-posts-pending" class="services-list"></div>
+                </div>
+
+                <!-- APROBADOS -->
+                <div>
+                    <h3 class="services-section-title success">
+                        <i class="bi bi-check-circle-fill"></i> Aprobados
+                    </h3>
+                    <div id="my-posts-approved" class="services-list"></div>
+                </div>
+
+                <!-- DESAPROBADOS -->
+                <div>
+                    <h3 class="services-section-title danger">
+                        <i class="bi bi-x-circle-fill"></i> Desaprobados
+                    </h3>
+                    <div id="my-posts-rejected" class="services-list"></div>
+                </div>
+
+                <hr style="border-color:#e8edf5;">
+
+                <!-- MODERAR -->
+                <div>
+                    <h3 class="services-section-title" style="color:#17212b;">
+                        <i class="bi bi-sliders"></i> Moderar mis servicios
+                    </h3>
+
+                    <h4 class="services-subsection-title">Activos</h4>
+                    <div id="my-posts-active" class="services-list"></div>
+
+                    <h4 class="services-subsection-title" style="margin-top:16px;">Inactivos</h4>
+                    <div id="my-posts-inactive" class="services-list"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMINISTRAR SERVICIOS MODAL (ADMIN) -->
+    <div id="admin-servicios-modal" class="modal-overlay" style="z-index:300;">
+        <div style="
+        background:white;border-radius:24px;width:100%;max-width:780px;
+        max-height:88vh;display:flex;flex-direction:column;
+        overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+      ">
+            <div
+                style="padding:24px 28px 16px;border-bottom:1px solid #e8edf5;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h2 class="modal-title">Administrar servicios</h2>
+                    <p class="modal-subtitle">Revisá y moderá las publicaciones pendientes</p>
+                </div>
+                <button class="modal-close-x" onclick="closeAdminServiciosModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div id="admin-pending-list"
+                style="overflow-y:auto;flex:1;padding:20px 28px;display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN REPORTS MODAL -->
+    <div id="admin-reports-modal" class="modal-overlay">
+        <div class="admin-reports-box">
+
+            <div class="modal-profile-header">
+                <h2 class="modal-title">Reportes</h2>
+                <button class="modal-close-x" onclick="closeReportesModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="admin-reports-body" id="admin-reports-body">
+                <p style="color:#9ba5b3;text-align:center;">Cargando estadísticas...</p>
+            </div>
+
+            <div class="admin-reports-footer">
+                <button class="btn-cancel" onclick="closeReportesModal()">Cerrar</button>
+                <button class="btn-submit" onclick="descargarReportePDF()">
+                    <i class="bi bi-download me-2"></i>Descargar PDF
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- REJECT REASON MODAL (ADMIN) -->
+    <div id="reject-reason-modal" class="modal-overlay" style="z-index:500;">
+        <div class="modal-box">
+            <h2 class="modal-title">Rechazar publicación</h2>
+            <p class="modal-subtitle">Indicá el motivo del rechazo</p>
+            <input type="hidden" id="reject-post-id">
+            <div id="reject-alert" class="d-none"
+                style="border-radius:12px;font-size:14px;padding:10px 14px;margin-bottom:16px;"></div>
+            <label class="modal-label">Motivo</label>
+            <textarea id="reject-reason" rows="3"
+                placeholder="Ej: El título no cumple con las políticas de la plataforma..." class="modal-input"
+                style="resize:none;"></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeRejectModal()">Cancelar</button>
+                <button class="btn-reject" style="flex:1;padding:12px;" onclick="confirmarRechazo()">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="app" id="home-view">
 
         <!-- SIDEBAR -->
@@ -340,6 +572,11 @@
                     <button id="btn-support-admin" style="display:none;">
                         <i class="bi bi-chat-dots-fill me-2"></i>
                         Soporte
+                    </button>
+
+                    <button id="btn-calificar" style="display:none;">
+                        <i class="bi bi-star-fill me-2"></i>
+                        Calificar servicios
                     </button>
 
                     <button id="btn-mis-servicios">
@@ -374,6 +611,10 @@
             <div class="floating-icons">
                 <button class="float-icon" id="btn-open-profile">
                     <i class="bi bi-person-fill"></i>
+                </button>
+
+                <button class="float-icon" id="btn-reportes" style="display:none;">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
                 </button>
 
                 <button class="float-icon" id="btn-open-create">
@@ -482,15 +723,15 @@
                         <!-- SECCIONES ADMIN (3 columnas) -->
                         <div id="admin-ticket-sections">
                             <div class="admin-ticket-col">
-                                <h4>Sin leer</h4>
+                                
                                 <div class="ticket-list" id="ticket-list-unread"></div>
                             </div>
                             <div class="admin-ticket-col">
-                                <h4>Abiertos</h4>
+                                
                                 <div class="ticket-list" id="ticket-list-open"></div>
                             </div>
                             <div class="admin-ticket-col">
-                                <h4>Cerrados</h4>
+                                
                                 <div class="ticket-list" id="ticket-list-closed"></div>
                             </div>
                         </div>
@@ -515,7 +756,7 @@
                             </p>
                         </div>
 
-                        <div class="chat-input" style="display:none;">
+                        <div class="chat-input" id="chat-input-area" style="display:none;">
                             <input type="text" id="chat-input-msg" placeholder="Escribí tu mensaje..."
                                 onkeydown="if(event.key==='Enter') enviarMensaje()">
                             <button onclick="enviarMensaje()">Enviar</button>
