@@ -64,3 +64,53 @@ router.post('/tickets/:id/messages', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
+// GET /api/support/admin/tickets — todos los tickets (admin)
+router.get('/admin/tickets', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.execute('CALL sp_get_all_tickets()');
+    return res.status(200).json({ ok: true, data: rows[0] });
+  } catch (error) {
+    console.error('Error en sp_get_all_tickets:', error);
+    return res.status(500).json({ ok: false, message: 'Error al obtener tickets.' });
+  }
+});
+
+// PUT /api/support/tickets/:id/close — cerrar ticket
+router.put('/tickets/:id/close', authMiddleware, async (req, res) => {
+  try {
+    await pool.execute('CALL sp_close_ticket(?)', [req.params.id]);
+    return res.status(200).json({ ok: true, message: 'Ticket cerrado.' });
+  } catch (error) {
+    console.error('Error en sp_close_ticket:', error);
+    return res.status(500).json({ ok: false, message: 'Error al cerrar ticket.' });
+  }
+});
+
+// PUT /api/support/tickets/:id/read
+router.put('/tickets/:id/read', authMiddleware, async (req, res) => {
+  try {
+    await pool.execute(
+      'UPDATE support_tickets SET last_read_at = NOW() WHERE id_ticket = ? AND id_user = ?',
+      [req.params.id, req.user.id_user]
+    );
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('Error al marcar como leído:', error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// PUT /api/support/tickets/:id/read-admin
+router.put('/tickets/:id/read-admin', authMiddleware, async (req, res) => {
+  try {
+    await pool.execute(
+      'UPDATE support_tickets SET last_read_admin_at = NOW() WHERE id_ticket = ?',
+      [req.params.id]
+    );
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('Error al marcar como leído admin:', error);
+    return res.status(500).json({ ok: false });
+  }
+});
